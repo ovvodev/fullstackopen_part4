@@ -3,19 +3,20 @@ const app = express()
 const cors = require('cors')
 const config = require('./utils/config')
 const mongoose = require('mongoose')
-const blog = require('./models/blog')
+const Blog = require('./models/blog')
 
-const blogSchema = new mongoose.Schema({
+/*const blogSchema = new mongoose.Schema({
   title: String,
   author: String,
   url: String,
   likes: Number
-})
-
-const Blog = mongoose.model('Blog', blogSchema)
-const password = process.argv[2]
+})*/
+/*const password = process.argv[2]
 const mongoUrl = `mongodb+srv://ovvodev:${password}@cluster0.rarbpyh.mongodb.net/?retryWrites=true&w=majority`
-mongoose.connect(mongoUrl)
+*/
+/*const Blog = mongoose.model('Blog', blogSchema)*/
+
+/*mongoose.connect(mongoUrl)*/
 
 app.use(cors())
 app.use(express.json())
@@ -39,6 +40,6 @@ app.post('/api/blogs', (request, response) => {
 })
 
 
-app.listen(PORT, () => {
+app.listen(config.PORT, () => {
   console.log(`Server running on port ${config.PORT}`)
 })
