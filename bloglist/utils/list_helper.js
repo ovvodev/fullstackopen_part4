@@ -4,7 +4,7 @@ const dummy = (blogs) => {
   
 const totalLikes = (blogs) => {
   
-    const sumOfLikes = (list, value) => {
+  const sumOfLikes = (list, value) => {
       return list.reduce((acc, obj) => acc + obj[value],0 )
     }
     
@@ -21,21 +21,35 @@ const favoriteBlog = (blogs) => {
 const mostBlogs = (blogs) => {
   
     const authorBlogs = blogs.reduce((counts, blog) => {
-      counts[blog.author] = (counts[blog.author] || 0) + blog.blogs;
-      return counts;
-    }, {});
+      counts[blog.author] = (counts[blog.author] || 0) + blog.blogs
+      return counts
+    }, {})
+
+  const topAuthor = Object.entries(authorBlogs).reduce((max, [author, blogs]) => {
+      return blogs > max.blogs ? { author, blogs } : max
+    }, { author: null, blogs: 0 })
   
-    const topAuthor = Object.entries(authorBlogs).reduce((max, [author, blogs]) => {
-      return blogs > max.blogs ? { author, blogs } : max;
-    }, { author: null, blogs: 0 });
+    return topAuthor
   
-    return topAuthor;
-  
-};
+}
+
+const mostLikes = (blogs) => {
+  const authorLikes = blogs.reduce((counts, blog) => {
+    counts[blog.author] = (counts[blog.author] || 0) + blog.likes;
+    return counts
+  }, {})
+
+  const topAuthor = Object.entries(authorLikes).reduce((max, [author, likes]) => {
+    return likes > max.likes ? { author, likes } : max
+  }, { author: null, likes: 0 })
+
+  return topAuthor
+}
 
   module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
     mostBlogs,
+    mostLikes,
   }
