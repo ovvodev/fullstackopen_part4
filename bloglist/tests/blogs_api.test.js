@@ -71,12 +71,49 @@ test('blog posts have unique identifier property named id', async () => {
   await newBlog.save()
 
   // Retrieve the new blog post from the database
-  const savedBlog = await Blog.findOne({ title: 'New Blog Post' })
+  let savedBlog = await Blog.findOne({ title: 'New Blog Post' })
 
   // Verify that the unique identifier property 'id' exists in the new blog post
   expect(savedBlog.id).toBeDefined()
   // Verify that the default unique identifier property '_id' does not exist in the new blog post
   expect(savedBlog._id).toBeUndefined()
+
+  // Reset the toJSON transform to evaluate the saved blog object without the transform
+  blogSchema.set('toJSON', {
+    transform: (document, returnedObject) => {
+      returnedObject.id = returnedObject._id.toString()
+      delete returnedObject._id
+      delete returnedObject.__v
+    }
+  })
+
+  // Retrieve the new blog post from the database again to test without the transform
+  savedBlog = await Blog.findOne({ title: 'New Blog Post' })
+
+  // Verify that the unique identifier property 'id' exists in the new blog post without the transform
+  expect(savedBlog.id).toBeDefined()
+  // Verify that the default unique identifier property '_id' exists in the new blog post without the transform
+  expect(savedBlog._id).toBeDefined()
+})
+
+test('creating a new blog post increases the total number of blogs by one', async () => {
+  const initialBlogs = await Blog.find({})
+
+  const newBlog = {
+    title: 'Test Blog Post',
+    author: 'Test Author',
+    url: 'www.testblogpost.com',
+    likes: 20
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const finalBlogs = await Blog.find({})
+  expect(finalBlogs).toHaveLength(initialBlogs.length + 1)
 })
 afterAll(async () => {
   await mongoose.connection.close()
