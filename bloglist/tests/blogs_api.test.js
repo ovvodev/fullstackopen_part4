@@ -134,6 +134,29 @@ test('blog posts has the like property or not and the default value is 0', async
   }
 })
 
+test('blog posts are missing url or title', async () => {
+  const allBlogs = await Blog.find({})
+
+  for(let blog of allBlogs) {
+    if (!blog.title) {
+      const { title, ...blogWithoutTitle } = blog.toJSON()
+      await api
+        .post('/api/blogs')
+        .send(blogWithoutTitle)
+        .expect(400)
+    }
+  }
+  for(let blog of allBlogs) {
+    if (!blog.url) {
+      const { url, ...blogWithoutUrl } = blog.toJSON()
+      await api
+        .post('/api/blogs')
+        .send(blogWithoutUrl)
+        .expect(400)
+    }
+  }
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
