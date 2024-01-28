@@ -176,7 +176,17 @@ test('deleting a non-existing blog post returns status code 404', async () => {
     .delete(`/api/blogs/${nonExistingId}`)
     .expect(404)
 })
+test('updating a blog post returns status code 200', async () => {
+  const blogsBeforeUpdate = await Blog.find({})
+  const blogToUpdate = blogsBeforeUpdate[0]
 
+  await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send({
+      likes: 10
+    })
+    .expect(200)
+})
 afterAll(async () => {
   await mongoose.connection.close()
 })
