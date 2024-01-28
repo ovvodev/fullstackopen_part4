@@ -157,6 +157,26 @@ test('blog posts are missing url or title', async () => {
   }
 })
 
+test('deleting a blog post returns status code 204', async () => {
+  const blogsBeforeDelete = await Blog.find({})
+  const blogToDelete = blogsBeforeDelete[0]
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+  const blogsAfterDelete = await Blog.find({})
+  expect(blogsAfterDelete).toHaveLength(blogsBeforeDelete.length - 1)
+})
+
+test('deleting a non-existing blog post returns status code 404', async () => {
+  const nonExistingId = '5f25d897b6c9bb03d8e4a8f1' // Assuming this ID does not exist
+
+  await api
+    .delete(`/api/blogs/${nonExistingId}`)
+    .expect(404)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
