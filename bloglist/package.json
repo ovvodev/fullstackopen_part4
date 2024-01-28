@@ -10,7 +10,8 @@
     "deploy:full": "npm run build:ui && npm run deploy",
     "logs:prod": "fly logs",
     "lint": "eslint .",
-    "test": "NODE_ENV=test jest --verbose --runInBand"
+    "test": "NODE_ENV=test jest --verbose --runInBand",
+    "lintfix": "eslint --fix ."
   },
   "author": "Kostas",
   "license": "MIT",

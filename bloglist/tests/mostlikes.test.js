@@ -5,59 +5,59 @@ const listHelper = require('../utils/list_helper')
 describe('total likes', () => {
   const listWithOneBlog = [
     {
-      
+
       author: 'Edsger W. Dijkstra',
-      
+
       likes: 15,
-      
+
     },
-    
+
   ]
 
   const listWithMultipleBlogs = [
     {
-      
-      author: "Michael Chan",
-      
+
+      author: 'Michael Chan',
+
       likes: 7,
-      
+
     },
     {
-      
-      author: "MMAMA W. ",
-      
+
+      author: 'MMAMA W. ',
+
       likes: 5,
-      
+
     },
     {
-      
-      author: "Edsger W. Dijkstra",
-      
+
+      author: 'Edsger W. Dijkstra',
+
       likes: 12,
-      
+
     },
     {
-     
-      author: "Jack C. Martin",
-      
+
+      author: 'Jack C. Martin',
+
       likes: 10,
-      
+
     },
     {
-     
-      author: "Bill C. ",
-     
+
+      author: 'Bill C. ',
+
       likes: 0,
-      
+
     },
     {
-      
-      
-      author: "Robert C. Martin",
-     
+
+
+      author: 'Robert C. Martin',
+
       likes: 12,
-      
-    }  
+
+    }
   ]
 
   test('when list has only one blog, this with most blogs is this one', () => {
@@ -66,8 +66,8 @@ describe('total likes', () => {
   })
 
   test('when list has multiple blogs, the author with most blogs.', () => {
-    const result = listHelper.mostLikes(listWithMultipleBlogs);
-    expect(result).toEqual({ author: 'Edsger W. Dijkstra', likes: 12 });
-  });
-  
+    const result = listHelper.mostLikes(listWithMultipleBlogs)
+    expect(result).toEqual({ author: 'Edsger W. Dijkstra', likes: 12 })
+  })
+
 })
