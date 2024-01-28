@@ -115,6 +115,25 @@ test('creating a new blog post increases the total number of blogs by one', asyn
   const finalBlogs = await Blog.find({})
   expect(finalBlogs).toHaveLength(initialBlogs.length + 1)
 })
+
+test('blog posts has the like property or not and the default value is 0', async () => {
+  const allBlogs = await Blog.find({})
+
+  for(let blog of allBlogs) {
+    if (!blog.likes) {
+      const { likes, ...blogWithoutLikes } = blog.toJSON()
+
+      const response = await api
+        .post('/api/blogs')
+        .send(blogWithoutLikes)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      expect(response.body.likes).toBe(0)
+    }
+  }
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
