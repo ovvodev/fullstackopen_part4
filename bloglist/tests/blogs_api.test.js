@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const api = supertest(app)
 
@@ -21,13 +22,72 @@ const initialBlogs = [
   },
 ]
 
-beforeEach(async () => {
+/*beforeEach(async () => {
   await Blog.collection.drop({})
   for (let blog of initialBlogs) {
     let blogObject = new Blog(blog)
     await blogObject.save()
   }
 }, 20000)
+*/
+
+beforeEach(async () => {
+  await Blog.deleteMany({})
+  await User.deleteMany({})
+
+  let blogObject = new Blog(initialBlogs[0])
+  await blogObject.save()
+
+  blogObject = new Blog(initialBlogs[1])
+  await blogObject.save()
+})
+
+describe('Adding a new blog post', () => {test('succeeds with valid token', async () => {
+  const newBlog = {
+    title: 'New blog',
+    author: 'James Bond',
+    url: 'http://example.com/new-blog',
+    likes: 30
+  }
+
+  const user = await User.findOne({})
+  const loginResponse = await api
+    .post('/api/login')
+    .send({ username: user.username, password: 'password' })
+    .expect(200)
+
+  const token = loginResponse.body.token
+
+  await api
+    .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+  const titles = response.body.map(blog => blog.title)
+
+  expect(response.body).toHaveLength(initialBlogs.length + 1)
+  expect(titles).toContain(newBlog.title)
+})
+
+test('fails with status code 401 if token is not provided', async () => {
+  const newBlog = {
+    title: 'New blog',
+    author: 'James Bond',
+    url: 'http://example.com/new-blog',
+    likes: 30
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(401)
+    .expect('Content-Type', /application\/json/)
+})
+})
+
 
 test('blog posts are returned as json', async () => {
   const res = await api
